@@ -9,6 +9,12 @@
 #include "shade_ils.h"
 #include "population_utils.h"
 
+
+struct Individual {
+    std::vector<float> solution;
+    float fitness;
+};
+
 // SHADE-ILS algorithm
 void SHADE_ILS(const int POPSIZE, const int DIM, const float MIN, const float MAX, const int FUNCTION_NO, const int FUNCTION_EVALS) {
     // Initialization
