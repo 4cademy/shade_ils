@@ -14,5 +14,5 @@ add_executable(shade_ils main.cpp
         ls.h
         l_bfgs_b.cpp
         l_bfgs_b.h
-        mtsls.cpp
-        mtsls.h)
+        mts_ls1.cpp
+        mts_ls1.h)
