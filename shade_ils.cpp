@@ -20,6 +20,8 @@ void SHADE_ILS(const int POPSIZE, const int DIM, const float MIN, const float MA
     // Initialization
     std::vector<std::vector<float>> population = initialize_population(POPSIZE, DIM, MIN, MAX);
     std::vector<float> fitness(POPSIZE);
+    std::vector<float> initial_solution(DIM, (MAX+MIN)/2.0f);
+
 
     // Main loop
     for (int fe = 0; fe < FUNCTION_EVALS; ++fe) {
