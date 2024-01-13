@@ -9,4 +9,10 @@ add_executable(shade_ils main.cpp
         objective_functions.h
         objective_functions.cpp
         population_utils.cpp
-        population_utils.h)
+        population_utils.h
+        ls.cpp
+        ls.h
+        l_bfgs_b.cpp
+        l_bfgs_b.h
+        mtsls.cpp
+        mtsls.h)

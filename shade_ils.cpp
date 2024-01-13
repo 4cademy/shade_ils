@@ -8,6 +8,7 @@
 // local includes
 #include "shade_ils.h"
 #include "population_utils.h"
+#include "ls.h"
 
 
 struct Individual {
