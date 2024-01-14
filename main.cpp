@@ -19,13 +19,6 @@ int main(int argc, char* argv[]) {
     const int FUNCTION_NO = std::stoi(argv[5]);  // Number of the objective function to be optimized
     const int FUNCTION_EVALS = std::stoi(argv[6]);  // Maximum number of function evaluations
 
-
-    // Seed for random number generation
-    std::srand(std::time(nullptr));
-
-    // Run SHADE-ILS algorithm
-    SHADE_ILS(POPSIZE, DIM, MIN, MAX, FUNCTION_NO, FUNCTION_EVALS);
-
     std::cout << "MAIN" << std::endl;
     std::cout << "POPSIZE: " << POPSIZE << std::endl;
     std::cout << "DIM: " << DIM << std::endl;
@@ -33,5 +26,11 @@ int main(int argc, char* argv[]) {
     std::cout << "MAX: " << MAX << std::endl;
     std::cout << "FUNCTION_NO: " << FUNCTION_NO << std::endl;
     std::cout << "FUNCTION_EVALS: " << FUNCTION_EVALS << std::endl;
+
+    // Seed for random number generation
+    std::srand(std::time(nullptr));
+
+    // Run SHADE-ILS algorithm
+    SHADE_ILS(POPSIZE, DIM, MIN, MAX, FUNCTION_NO, FUNCTION_EVALS);
     return 0;
 }
