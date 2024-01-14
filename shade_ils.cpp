@@ -20,7 +20,7 @@ void SHADE_ILS(const int POPSIZE, const int DIM, const float MIN, const float MA
     std::vector<float> initial_solution(DIM, (MAX+MIN)/2.0f);
     float initial_fitness = objective_function_no(initial_solution, DIM, FUNCTION_NO);
     Individual current_best{initial_solution, initial_fitness};
-    current_best = LS(current_best, DIM, MIN, MAX, FUNCTION_NO, FUNCTION_EVALS);
+    current_best = LS(current_best, DIM, MIN, MAX, FUNCTION_NO, 25'000);
     std::cout << "Initial best solution: " << current_best.fitness << std::endl;
 
 
