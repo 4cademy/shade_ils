@@ -142,6 +142,9 @@ Individual SHADE(std::vector <std::vector<float>>& population, std::vector<float
             // generate trial vector
             std::vector<float> trial_vector = generate_trial_vector(population, current_best, i, f, cr, POPSIZE, DIM, MIN, MAX);
 
+            // copy trial vector to trial population
+            trial_pop[i] = trial_vector;
+
             // evaluate trial vector
             trial_fitness[i] = objective_function_no(trial_vector, DIM, FUNCTION_NO);
 
