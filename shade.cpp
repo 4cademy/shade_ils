@@ -3,7 +3,6 @@
 //
 
 #include <vector>
-#include <chrono>
 #include <random>
 #include <thread>
 #include <iostream>
@@ -11,12 +10,15 @@
 #include "individual.h"
 #include "objective_functions.h"
 
+
+// create random number generator by seeding with device specific random number and hash of thread id
 std::random_device shade_rd;
 const std::random_device::result_type seed = shade_rd();
 std::mt19937_64 shade_gen(seed + std::hash<std::thread::id>{}(std::this_thread::get_id()));
 
-int H = 100;    // history size
+int H = 100;    // size of memory for cr and f
 
+// this function calculates the weighted arithmetic mean of a vector of values
 float weighted_arithmetic_mean(const std::vector<float>& values, const std::vector<float>& weights){
     if (values.size() != weights.size()) {
         std::cout << "Error: values and weights must have the same size to calculate weighted arithmetic mean." << std::endl;
@@ -36,6 +38,7 @@ float weighted_arithmetic_mean(const std::vector<float>& values, const std::vect
     }
 }
 
+// this function calculates the weighted Lehmer mean of a vector of values
 float weighted_lehmer_mean(const std::vector<float>& values, const std::vector<float>& weights, int power){
     if (values.size() != weights.size()) {
         std::cout << "Error: values and weights must have the same size to calculate weighted lehmer mean." << std::endl;
@@ -68,6 +71,7 @@ std::vector<float> generate_trial_vector(const std::vector<std::vector<float>>& 
         donor2_index = uni_int(shade_gen);
     }
 
+    // ToDo: implement current-to-pbest/1/bin
     std::vector<float> trial_vector(DIM);
     for (unsigned i = 0; i < DIM; i++) {
         float old_gene = population[parent_index][i];
@@ -89,7 +93,7 @@ std::vector<float> generate_trial_vector(const std::vector<std::vector<float>>& 
     return trial_vector;
 }
 
-void SHADE(std::vector <std::vector<float>>& population, std::vector<float>& fitness, const Individual& current_best, const int POPSIZE, const int DIM, const float MIN, const float MAX, const int FUNCTION_NO, const int FUNCTION_EVALS) {
+Individual SHADE(std::vector <std::vector<float>>& population, std::vector<float>& fitness, const Individual& current_best, const int POPSIZE, const int DIM, const float MIN, const float MAX, const int FUNCTION_NO, const int FUNCTION_EVALS) {
     std::vector<float> M_CR(H, 0.5f);
     std::vector<float> M_F(H, 0.5f);
     int memory_counter = 0;
@@ -113,10 +117,11 @@ void SHADE(std::vector <std::vector<float>>& population, std::vector<float>& fit
         for (int i = 0; i < POPSIZE; ++i) {
             int ri = uni_int(shade_gen);
 
+            // set distribution parameters
             std::normal_distribution<float> normal_float_dist(M_CR[ri], 0.1);
-
             std::cauchy_distribution<float> cauchy_dist(M_F[ri], 0.1);
 
+            // generate new evaluation parameters cr and f for each individual
             float cr = normal_float_dist(shade_gen);
             if (cr < 0) {
                 cr = 0;
@@ -139,6 +144,9 @@ void SHADE(std::vector <std::vector<float>>& population, std::vector<float>& fit
 
             // evaluate trial vector
             trial_fitness[i] = objective_function_no(trial_vector, DIM, FUNCTION_NO);
+
+            // update function evaluation counter every time the objective function is called
+            fe++;
         }
 
         for (int i = 0; i < POPSIZE; ++i) {
@@ -147,7 +155,7 @@ void SHADE(std::vector <std::vector<float>>& population, std::vector<float>& fit
                     // ToDo: Move original individual to archive
                     S_CR.push_back(trial_cr[i]);
                     S_F.push_back(trial_f[i]);
-                    delta_fitness.push_back(fabsf(fitness[i] - trial_fitness[i]));
+                    delta_fitness.push_back(fabsf( trial_fitness[i] - fitness[i]));
                 }
 
                 // replace original individual with trial individual
@@ -162,9 +170,32 @@ void SHADE(std::vector <std::vector<float>>& population, std::vector<float>& fit
 
         // ToDo: Whenever the size of the archive exceeds |A|, randomly selected individuals are deleted so that |A| ≤ |P|
 
+        // if better solution was found S_CR and S_F are not empty -> update memories M_CR and M_F with weighted arithmetic mean of S_CR and weighted Lehmer mean of S_F
         if (!S_CR.empty() and !S_F.empty()) {
-            // ToDo: Update M_CR and M_F
+            float mean_cr = weighted_arithmetic_mean(S_CR, delta_fitness);
+            float mean_f = weighted_lehmer_mean(S_F, delta_fitness, 2);
+            M_CR[memory_counter] = mean_cr;
+            M_F[memory_counter] = mean_f;
+            memory_counter++;
+            if (memory_counter >= H) {
+                memory_counter = 0;
+            }
         }
-        ++fe;
     }
+
+    // find and return the best individual
+    int best_index = 0;
+    float best_fitness = fitness[0];
+    for (int i = 1; i < POPSIZE; ++i) {
+        if (fitness[i] < best_fitness) {
+            best_fitness = fitness[i];
+            best_index = i;
+        }
+    }
+
+    Individual best_individual;
+    best_individual.solution = population[best_index];
+    best_individual.fitness = best_fitness;
+    return best_individual;
+
 }

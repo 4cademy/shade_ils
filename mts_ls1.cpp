@@ -85,7 +85,7 @@ void mts_ls1(int DIM, float MIN, float MAX, int FUNCTION_NO, unsigned maxevals, 
             improvement[*it] = improve;
 
             if( improve > 0.0 ){
-                printf("[1] %.10lf > %.10lf ~ improve: %.20lf\n", current_best.fitness, result.fitness, improve);
+                // printf("[1] %.10lf > %.10lf ~ improve: %.20lf\n", current_best.fitness, result.fitness, improve);
                 current_best = result;
             } else {
                 SR[*it] /= 2.0f;
@@ -107,7 +107,7 @@ void mts_ls1(int DIM, float MIN, float MAX, int FUNCTION_NO, unsigned maxevals, 
         next_i = dim_sorted[next_d];
 
         if( improve > 0.0 ){
-            printf("[2] %.10lf > %.10lf ~ improve: %.20lf\n", current_best.fitness, result.fitness, improve);
+            // printf("[2] %.10lf > %.10lf ~ improve: %.20lf\n", current_best.fitness, result.fitness, improve);
             current_best = result;
 
             if( improvement[i] < improvement[next_i] ){
