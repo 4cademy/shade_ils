@@ -6,6 +6,7 @@
 #include <chrono>
 #include <random>
 #include <thread>
+#include <iostream>
 #include "shade.h"
 #include "individual.h"
 #include "objective_functions.h"
@@ -15,6 +16,42 @@ const std::random_device::result_type seed = shade_rd();
 std::mt19937_64 shade_gen(seed + std::hash<std::thread::id>{}(std::this_thread::get_id()));
 
 int H = 100;    // history size
+
+float weighted_arithmetic_mean(const std::vector<float>& values, const std::vector<float>& weights){
+    if (values.size() != weights.size()) {
+        std::cout << "Error: values and weights must have the same size to calculate weighted arithmetic mean." << std::endl;
+        return 0;
+    } else {
+        size_t length = values.size();
+        float total_weight = 0;
+        for(auto& weight : weights){
+            total_weight += weight;
+        }
+
+        float mean = 0;
+        for(int i = 0; i < length; i++){
+            mean += (values[i] * weights[i]/total_weight);
+        }
+        return mean;
+    }
+}
+
+float weighted_lehmer_mean(const std::vector<float>& values, const std::vector<float>& weights, int power){
+    if (values.size() != weights.size()) {
+        std::cout << "Error: values and weights must have the same size to calculate weighted lehmer mean." << std::endl;
+        return 0;
+    } else {
+        size_t length = values.size();
+        float dividend = 0;
+        float divisor = 0;
+        for(int i = 0; i < length; i++){
+            dividend += (powf(values[i], (float)power) * weights[i]);
+            divisor += (powf(values[i], (float)(power - 1)) * weights[i]);
+        }
+        float mean = dividend/divisor;
+        return mean;
+    }
+}
 
 std::vector<float> generate_trial_vector(const std::vector<std::vector<float>>& population, const Individual& current_best, const int parent_index, const float f, const float cr, const int POPSIZE, const int DIM, const float MIN, const float MAX) {
     std::uniform_int_distribution<int> uni_int(0, POPSIZE - 1);
