@@ -61,7 +61,7 @@ void mts_ls1(int DIM, float MIN, float MAX, int FUNCTION_NO, unsigned maxevals, 
     unsigned totalevals = 0;
     float best_fitness = objective_function_no(sol, DIM, FUNCTION_NO);
 
-    vector<float> SR(sol.size());
+    vector<float> SR(DIM);
     for( unsigned i = 0; i < SR.size(); i++ ){
         SR[i] = (MAX - MIN) * 0.4f;
     }
@@ -78,17 +78,17 @@ void mts_ls1(int DIM, float MIN, float MAX, int FUNCTION_NO, unsigned maxevals, 
     //warm-up
     if( totalevals < maxevals ){
         next_permutation(dim_sorted.begin(), dim_sorted.end());
-        for( auto it = dim_sorted.begin(); it != dim_sorted.end(); it++ ){
-            result = mts_ls1_improve_dim(DIM, MIN, MAX, FUNCTION_NO, sol, best_fitness, *it, SR);
+        for(auto & it : dim_sorted){
+            result = mts_ls1_improve_dim(DIM, MIN, MAX, FUNCTION_NO, sol, best_fitness, it, SR);
             totalevals += result.evals;
             improve = max(current_best.fitness - result.fitness, 0.0f);
-            improvement[*it] = improve;
+            improvement[it] = improve;
 
             if( improve > 0.0 ){
                 // printf("[1] %.10lf > %.10lf ~ improve: %.20lf\n", current_best.fitness, result.fitness, improve);
                 current_best = result;
             } else {
-                SR[*it] /= 2.0f;
+                SR[it] /= 2.0f;
             }
         }
     }

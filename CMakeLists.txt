@@ -3,8 +3,6 @@ project(shade_ils)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CXX_FLAGS "-O3")
-
 add_executable(shade_ils main.cpp
         shade_ils.h
         shade_ils.cpp

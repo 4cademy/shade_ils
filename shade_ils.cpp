@@ -21,7 +21,7 @@ std::random_device shade_ils_rd;
 const std::random_device::result_type seed = shade_ils_rd();
 std::mt19937_64 shade_ils_gen(seed + std::hash<std::thread::id>{}(std::this_thread::get_id()));
 
-void shade_reset(std::vector<std::vector<float>>& population, Individual& current_best, const int POPSIZE, const int DIM, const float MIN, const float MAX) {
+void shade_reset(std::vector<std::vector<float>>& population, std::vector<float>& fitness, Individual& current_best, const int POPSIZE, const int DIM, const float MIN, const float MAX) {
     // select random solution from population
     std::uniform_int_distribution<int> uni_int(0, POPSIZE - 1);
     int random_index = uni_int(shade_ils_gen);
@@ -32,10 +32,16 @@ void shade_reset(std::vector<std::vector<float>>& population, Individual& curren
     for (int i = 0; i < DIM; i++) {
         float rand = normal_float_dist(shade_ils_gen);
         current_best.solution[i] = random_solution[i] + rand * 0.1 * (MAX-MIN);
+        // clip to bounds
+        current_best.solution[i] = std::min(current_best.solution[i], MAX);
+        current_best.solution[i] = std::max(current_best.solution[i], MIN);
+
+        current_best.fitness = objective_function_no(current_best.solution, DIM, 1);
     }
 
     // reset population
     population = initialize_population(POPSIZE, DIM, MIN, MAX);
+    update_fitness(population, fitness, POPSIZE, DIM, 1);
 
     // ToDo: reset LS parameters
 }
@@ -86,7 +92,8 @@ void SHADE_ILS(const int POPSIZE, const int DIM, const float MIN, const float MA
 
         if (reset_counter >= 3) {
             reset_counter = 0;
-            shade_reset(population, current_best, POPSIZE, DIM, MIN, MAX);
+            shade_reset(population, fitness, current_best, POPSIZE, DIM, MIN, MAX);
+            std::cout << "RESET" << std::endl;
         }
 
 
