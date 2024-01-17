@@ -27,9 +27,6 @@ int main(int argc, char* argv[]) {
     std::cout << "FUNCTION_NO: " << FUNCTION_NO << std::endl;
     std::cout << "FUNCTION_EVALS: " << FUNCTION_EVALS << std::endl;
 
-    // Seed for random number generation
-    std::srand(std::time(nullptr));
-
     // Run SHADE-ILS algorithm
     SHADE_ILS(POPSIZE, DIM, MIN, MAX, FUNCTION_NO, FUNCTION_EVALS);
     return 0;

@@ -56,7 +56,7 @@ void SHADE_ILS(const int POPSIZE, const int DIM, const float MIN, const float MA
     Individual current_best{initial_solution, initial_fitness};
     current_best = LS(current_best, DIM, MIN, MAX, FUNCTION_NO, 25'000);
     int fe = 25'000;
-    std::cout << "Initial best solution: " << current_best.fitness << std::endl;
+    std::cout << "25000;" << current_best.fitness << std::endl;
 
     Individual best_solution{current_best};
 
@@ -69,7 +69,7 @@ void SHADE_ILS(const int POPSIZE, const int DIM, const float MIN, const float MA
         // SHADE
         current_best = SHADE(population, fitness, current_best, POPSIZE, DIM, MIN, MAX, FUNCTION_NO, 25'000);
         fe += 25'000;
-        std::cout << fe << " SHADE: " << current_best.fitness << std::endl;
+        std::cout << fe << ";" << current_best.fitness << std::endl;
 
         improvement = (previous_best_fitness - current_best.fitness) / previous_best_fitness;
         previous_best_fitness = current_best.fitness;
@@ -77,7 +77,7 @@ void SHADE_ILS(const int POPSIZE, const int DIM, const float MIN, const float MA
         // LS
         current_best = LS(current_best, DIM, MIN, MAX, FUNCTION_NO, 25'000);
         fe += 25'000;
-        std::cout << fe << " LS: " << current_best.fitness << std::endl;
+        std::cout << fe << ";" << current_best.fitness << std::endl;
 
         if (current_best.fitness < best_solution.fitness) {
             best_solution = current_best;
@@ -93,7 +93,7 @@ void SHADE_ILS(const int POPSIZE, const int DIM, const float MIN, const float MA
         if (reset_counter >= 3) {
             reset_counter = 0;
             shade_reset(population, fitness, current_best, POPSIZE, DIM, MIN, MAX);
-            std::cout << "RESET" << std::endl;
+            // std::cout << "RESET" << std::endl;
         }
 
 
@@ -102,6 +102,4 @@ void SHADE_ILS(const int POPSIZE, const int DIM, const float MIN, const float MA
     for (int i = 0; i < POPSIZE; ++i) {
         std::cout << "Individual " << i << ": " << fitness[i] << std::endl;
     }
-
-    std::cout << "SHADE_ILS" << std::endl;
 }
