@@ -31,7 +31,7 @@ void shade_reset(std::vector<std::vector<float>>& population, std::vector<float>
     std::normal_distribution<float> normal_float_dist(0, 1);
     for (int i = 0; i < DIM; i++) {
         float rand = normal_float_dist(shade_ils_gen);
-        current_best.solution[i] = random_solution[i] + rand * 0.1 * (MAX-MIN);
+        current_best.solution[i] = random_solution[i] + rand * 0.1f * (MAX-MIN);
         // clip to bounds
         current_best.solution[i] = std::min(current_best.solution[i], MAX);
         current_best.solution[i] = std::max(current_best.solution[i], MIN);
