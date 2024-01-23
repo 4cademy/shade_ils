@@ -26,3 +26,16 @@ void update_fitness(const std::vector<std::vector<float>>& population, std::vect
         fitness[i] = objective_function_no(population[i], DIM, FUNCTION_NO);
     }
 }
+
+int get_min_index(const std::vector<float>& fitness, const int POPSIZE) {
+    // Find index of individual with minimum fitness
+    int min_index = 0;
+    float min_fitness = fitness[0];
+    for (int i = 1; i < POPSIZE; ++i) {
+        if (fitness[i] < min_fitness) {
+            min_index = i;
+            min_fitness = fitness[i];
+        }
+    }
+    return min_index;
+}

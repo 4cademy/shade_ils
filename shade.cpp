@@ -10,6 +10,7 @@
 #include "shade.h"
 #include "individual.h"
 #include "objective_functions.h"
+#include "population_utils.h"
 
 
 // create random number generator by seeding with device specific random number and hash of thread id
@@ -139,6 +140,11 @@ Individual SHADE(std::vector <std::vector<float>>& population, std::vector<float
         std::vector<float> S_CR;
         std::vector<float> S_F;
         std::vector<float> delta_fitness;
+
+        // put current best into population
+        int min_index = get_min_index(fitness, POPSIZE);
+        population[min_index] = current_best.solution;
+        fitness[min_index] = current_best.fitness;
 
         // generate trial population
         for (int i = 0; i < POPSIZE; ++i) {
