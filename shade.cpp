@@ -18,7 +18,7 @@ std::random_device shade_rd;
 const std::random_device::result_type seed = shade_rd();
 std::mt19937_64 shade_gen(seed + std::hash<std::thread::id>{}(std::this_thread::get_id()));
 
-int H = 100;                                 // size of memory for cr and f
+int H = 10;                                 // size of memory for cr and f
 std::vector<float> M_CR(H, 0.5f);   // memory for cr
 std::vector<float> M_F(H, 0.5f);    // memory for f
 int memory_counter = 0;                      // counter for next memory position to be updated
@@ -142,9 +142,9 @@ Individual SHADE(std::vector <std::vector<float>>& population, std::vector<float
         std::vector<float> delta_fitness;
 
         // put current best into population
-        int min_index = get_min_index(fitness, POPSIZE);
-        population[min_index] = current_best.solution;
-        fitness[min_index] = current_best.fitness;
+        int max_index = get_max_index(fitness, POPSIZE);
+        population[max_index] = current_best.solution;
+        fitness[max_index] = current_best.fitness;
 
         // generate trial population
         for (int i = 0; i < POPSIZE; ++i) {
@@ -208,7 +208,7 @@ Individual SHADE(std::vector <std::vector<float>>& population, std::vector<float
         }
 
         // trim archive to the size of population
-        while (archive.size() > POPSIZE) {
+        while (archive.size() > 1) {
             uni_int = std::uniform_int_distribution<int>(0, (int)archive.size() - 1);
             int index = uni_int(shade_gen);
             archive.erase(archive.begin() + index);

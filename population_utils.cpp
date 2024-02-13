@@ -39,3 +39,16 @@ int get_min_index(const std::vector<float>& fitness, const int POPSIZE) {
     }
     return min_index;
 }
+
+int get_max_index(const std::vector<float>& fitness, const int POPSIZE) {
+    // Find index of individual with minimum fitness
+    int max_index = 0;
+    float max_fitness = fitness[0];
+    for (int i = 1; i < POPSIZE; ++i) {
+        if (fitness[i] > max_fitness) {
+            max_index = i;
+            max_fitness = fitness[i];
+        }
+    }
+    return max_index;
+}
